@@ -13,7 +13,7 @@ export default function Document() {
                 <meta property="og:description" content="FGO Dropsheet Lookup Tool" />
                 <meta property="og:site_name" content="apps.atlasacademy.io" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://apps.atlasacademy.io/drop-lookup" />
+                <meta property="og:url" content="https://apps.atlasacademy.io/lookup" />
                 <meta property="og:image" content="https://apps.atlasacademy.io/db/logo192.png" />
                 <meta property="og:image:type" content="image/png" />
                 <meta property="og:image:width" content="300" />
