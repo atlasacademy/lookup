@@ -2,8 +2,9 @@ import gc
 from io import BytesIO
 import json
 import requests
-import pandas as pd
 import numpy as np
+import pandas as pd
+import os
 
 
 class NpEncoder(json.JSONEncoder):
@@ -158,6 +159,7 @@ mats_file_name = "./assets/mats.json"
 
 try:
     with open(mats_file_name, "w") as f:
+        os.makedirs(os.path.dirname(mats_file_name), exist_ok=True)
         json.dump(result_dict, f, cls=NpEncoder)
 except FileNotFoundError:
     mats_file_name = input(f"`{mats_file_name}` does not exist; provide alternate file path: ")
