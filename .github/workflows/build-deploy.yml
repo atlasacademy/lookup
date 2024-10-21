@@ -38,7 +38,10 @@ jobs:
               run: npm run build
 
             - name: Deploy to GitHub Pages
-              uses: JamesIves/github-pages-deploy-action@latest
+              uses: crazy-max/ghaction-github-pages@v4
               with:
-                  branch: gh-pages
-                  folder: out
+                  repo: atlasacademy/lookup
+                  target-branch: gh-pages
+                  build_dir: out
+              env:
+                  GH_PAT: ${{ secrets.GITHUB_TOKEN }}
