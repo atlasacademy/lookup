@@ -1,0 +1,20 @@
+.itemBox {
+    display: block;
+    width: 70%;
+    height: fit-content;
+    margin: 30px auto;
+    position: relative;
+    padding: 2rem;
+    background: rgba(49, 57, 93, 0.9);
+    text-align: center;
+    box-shadow: 1px 1px 8px 3px rgba(0, 0, 0, 0.7);
+    box-sizing: border-box;
+    font-family: Quicksand, Arial, sans-serif;
+}
+
+.heading {
+    color: #b5b5b5;
+    margin: 0 0 1rem 0;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+    font-size: 2rem;
+}

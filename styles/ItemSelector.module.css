@@ -1,0 +1,64 @@
+.itemContainer {
+    color: white;
+    font-size: 1rem;
+}
+
+.itemImageContainer {
+    padding: 0 5px 5px;
+    width: 60%;
+    margin: 1.5rem auto;
+}
+
+.itemImage {
+    vertical-align: middle;
+    width: 3.5rem;
+    height: auto;
+    margin: 0.05rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.expandCollapseButton {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: larger;
+}
+.resetButton {
+    font-size: 1rem;
+    margin: 0.5rem 0.5rem 2rem;
+    padding: 0.25rem 2rem;
+    border: 1px solid white;
+    background: #193268;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.resetButton:hover {
+    border: 1px solid #193268;
+    background: white;
+    color: #193268;
+}
+.rotate90 {
+    transform: rotateZ(-90deg);
+    transform-origin: 0% 50%;
+}
+
+.selectedImageContainer {
+    text-align: center;
+    width: 60%;
+    margin: 2rem auto 0;
+    position: relative;
+}
+.selectedItem {
+    border: 2px solid white !important;
+    border-radius: 5%;
+    transform: scale(1.15);
+    transition: all 0.25s ease-in-out;
+}
+.sheetDropdown {
+    width: 65%;
+    padding: 5px;
+}

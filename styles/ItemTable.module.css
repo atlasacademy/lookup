@@ -1,0 +1,83 @@
+.itemTableContainer {
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+    margin: 1rem auto 0;
+    width: 80%;
+    padding: 1rem 1rem 1rem 1rem;
+    background: #b9b9b9;
+    font-size: 0.9rem;
+    font-weight: 450;
+}
+
+.itemTable {
+    width: 100%;
+}
+
+.itemTable a,
+.itemTable a:visited {
+    color: inherit;
+}
+
+.itemTable th,
+.itemTable td {
+    padding: 0.5rem 0;
+}
+
+.itemTable th.No,
+.itemTable td.No {
+    width: 1.5%;
+}
+
+.itemTable th.Area,
+.itemTable td.Area {
+    width: 17.5%;
+}
+
+.itemTable th.Quest,
+.itemTable td.Quest {
+    width: 30%;
+}
+
+.itemTable th.AP,
+.itemTable td.AP {
+    width: 5%;
+}
+
+.itemTable th.BPAP,
+.itemTable td.BPAP {
+    width: 7.5%;
+}
+
+.itemTable th.APDrop,
+.itemTable td.APDrop {
+    width: 7.5%;
+}
+
+.itemTable th.DropChance,
+.itemTable td.DropChance {
+    width: 11%;
+}
+
+.itemTable th.Runs,
+.itemTable td.Runs {
+    width: 5%;
+}
+
+.itemTable tr td {
+    border-bottom: 1px solid grey;
+}
+
+.itemTable tr:last-child td {
+    border-bottom: 0;
+}
+
+.itemTable > thead > tr {
+    color: white;
+    background-color: #193268;
+}
+
+.itemTable > tbody > tr:hover {
+    background-color: #214085;
+    color: white;
+}

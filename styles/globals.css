@@ -1,0 +1,13 @@
+body {
+    background-image: url("../public/chaldea-wp.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+
+html {
+    min-height: 100%;
+}
