@@ -26,7 +26,7 @@ DROP_SHEET_NAMES = [
     "Best 5 Droprate (NA)",
 ]
 
-print("Fetching items", end="")
+print("Fetching items", end="", flush=True)
 
 item_df = pd.read_csv(ITEM_SHEET_URL)
 item_df = item_df[item_df["Image link"].str.contains("Items/") == True]
@@ -34,7 +34,7 @@ item_dict = item_df.set_index("ID")[["NA Name", "Image link"]].T.to_dict()
 
 del item_df
 
-print("... Fetched.\nFetching item icons...", end=" ")
+print("... Fetched.\nFetching item icons...", end=" ", flush=True)
 
 for item_id in item_dict:
     response = requests.get(f'https://api.atlasacademy.io/nice/JP/item/{item_dict[item_id]["Image link"].split("Items/")[1].split("_")[0]}')
@@ -43,7 +43,7 @@ for item_id in item_dict:
 
 gc.collect()
 
-print("Fetched.\nFetching dropsheet", end="")
+print("Fetched.\nFetching dropsheet", end="", flush=True)
 
 response = requests.get(DROP_SHEET_BASE_URL)
 response.raise_for_status()
@@ -54,7 +54,7 @@ image_urls = {}
 
 all_sheets = pd.read_excel(excel_data, sheet_name=None)
 
-print("... Loaded.")
+print("... Loaded.", flush=True)
 
 del excel_data
 
@@ -73,10 +73,10 @@ rarity_order = {
 }
 item_sorter = lambda x: (rarity_order.get(x["rarity"], 0), x["id"])
 
-print(f"Sheet names: {DROP_SHEET_NAMES}\nProcesing data...")
+print(f"Sheet names: {DROP_SHEET_NAMES}\nProcesing data...", flush=True)
 
 for sheet_name in DROP_SHEET_NAMES:
-    print(f"\t{sheet_name}", end="")
+    print(f"\t{sheet_name}", end="", flush=True)
 
     df = all_sheets[sheet_name]
 
@@ -151,7 +151,7 @@ for sheet_name in DROP_SHEET_NAMES:
 
     result_dict[sheet_name] = sorted(sheet_list, key=item_sorter)
 
-    print(f"... Done.")
+    print(f"... Done.", flush=True)
 
 
 mats_file_name = "./assets/mats.json"
@@ -166,4 +166,4 @@ except FileNotFoundError:
         json.dump(result_dict, f, cls=NpEncoder)
 
 
-print(f"Wrote drop data to `{mats_file_name}`")
+print(f"Wrote drop data to `{mats_file_name}`", flush=True)
