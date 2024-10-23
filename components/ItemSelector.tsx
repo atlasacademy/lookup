@@ -1,5 +1,5 @@
-import styles from "@/styles/ItemSelector.module.css";
 import { ItemDataType, sheetNames } from "@/pages";
+import styles from "@/styles/ItemSelector.module.css";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ const ItemSelector = ({ itemData }: { itemData: ItemDataType }) => {
             return;
         }
 
-        setSelectedItem(itemData[selectedSheet].find((item) => item.name === selectedItem.name)!);
+        setSelectedItem(itemData[selectedSheet].find((item) => item.name === selectedItem.name) ?? ({} as typeof selectedItem));
     }, [itemData, selectedItem.name, selectedSheet]);
 
     const reset = () => {
