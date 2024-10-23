@@ -52,7 +52,8 @@ const ItemSelector = ({ itemData }: { itemData: ItemDataType }) => {
                                 onClick={reset}
                                 src={selectedItem.image}
                                 alt={selectedItem.name}
-                            />
+                            />{" "}
+                            {selectedItem.name}
                         </span>
                         <span
                             title={isExpanded ? "Collapse" : "Expand"}
