@@ -1,10 +1,10 @@
-import gc
-from io import BytesIO
 import json
-import requests
+from io import BytesIO
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-import os
+import requests
 
 
 class NpEncoder(json.JSONEncoder):
@@ -30,19 +30,20 @@ DROP_SHEET_NAMES = [
 print("Fetching items", end="", flush=True)
 
 item_df = pd.read_csv(ITEM_SHEET_URL)
-item_df = item_df[item_df["Image link"].str.contains("Items/") == True]
+item_df = item_df[item_df["Image link"].str.contains("Items/") == 1]
 item_dict = item_df.set_index("ID")[["NA Name", "Image link"]].T.to_dict()
 
-del item_df
 
 print("... Fetched.\nFetching item icons...", end=" ", flush=True)
 
-for item_id in item_dict:
-    response = requests.get(f'https://api.atlasacademy.io/nice/JP/item/{item_dict[item_id]["Image link"].split("Items/")[1].split("_")[0]}')
-    response.raise_for_status()
-    item_dict[item_id]["rarity"] = response.json()["background"]
+nice_items_r = requests.get("https://api.atlasacademy.io/export/JP/nice_item.json")
+nice_items_r.raise_for_status()
+nice_items = {item["id"]: item for item in nice_items_r.json()}
+for item_info in item_dict.values():
+    item_info["rarity"] = nice_items[
+        int(item_info["Image link"].split("Items/")[1].split("_")[0])
+    ]["background"]
 
-gc.collect()
 
 print("Fetched.\nFetching dropsheet", end="", flush=True)
 
@@ -51,15 +52,10 @@ response.raise_for_status()
 
 excel_data = BytesIO(response.content)
 
-image_urls = {}
-
 all_sheets = pd.read_excel(excel_data, sheet_name=None)
 
 print("... Loaded.", flush=True)
 
-del excel_data
-
-gc.collect()
 
 result_dict = {}
 rarity_order = {
@@ -72,7 +68,6 @@ rarity_order = {
     "monument": 7,
     "piece": 8,
 }
-item_sorter = lambda x: (rarity_order.get(x["rarity"], 0), x["id"])
 
 print(f"Sheet names: {DROP_SHEET_NAMES}\nProcesing data...", flush=True)
 
@@ -85,10 +80,14 @@ for sheet_name in DROP_SHEET_NAMES:
     # df.columns[1] # The index in the admin info sheet
     df_cleaned.columns = df_cleaned.iloc[0]
     df_cleaned = df_cleaned[df_cleaned.iloc[:, 0] != "Item"]
-    df_cleaned = df_cleaned[df_cleaned.iloc[:, 8] != "1P+1L+1T"].dropna(axis=1, how="all")
+    df_cleaned = df_cleaned[df_cleaned.iloc[:, 8] != "1P+1L+1T"].dropna(
+        axis=1, how="all"
+    )
 
     with pd.option_context("future.no_silent_downcasting", True):
-        df_cleaned = df_cleaned.fillna(np.nan).replace([np.nan], [None]).reset_index(drop=True)
+        df_cleaned = (
+            df_cleaned.fillna(np.nan).replace([np.nan], [None]).reset_index(drop=True)
+        )
 
     columns = ["No.", "Area", "Quest", "AP", "BP/AP", "AP/Drop", "Drop Chance", "Runs"]
 
@@ -113,8 +112,12 @@ for sheet_name in DROP_SHEET_NAMES:
                             "Quest": df_cleaned.iloc[j, index_base_add + 5],  # Quest
                             "AP": df_cleaned.iloc[j, index_base_add + 6],  # AP
                             "BP/AP": df_cleaned.iloc[j, index_base_add + 7],  # BP/AP
-                            "AP/Drop": df_cleaned.iloc[j, index_base_add + 8],  # AP/Drop
-                            "Drop Chance": df_cleaned.iloc[j, index_base_add + 10],  # Drop Chance
+                            "AP/Drop": df_cleaned.iloc[
+                                j, index_base_add + 8
+                            ],  # AP/Drop
+                            "Drop Chance": df_cleaned.iloc[
+                                j, index_base_add + 10
+                            ],  # Drop Chance
                             "Runs": df_cleaned.iloc[j, index_base_add + 12],  # Runs
                         }
 
@@ -141,7 +144,9 @@ for sheet_name in DROP_SHEET_NAMES:
                     {
                         "name": name,
                         "image": item_dict[ID]["Image link"],
-                        "id": item_dict[ID]["Image link"].split("Items/")[1].split("_")[0],
+                        "id": item_dict[ID]["Image link"]
+                        .split("Items/")[1]
+                        .split("_")[0],
                         "rarity": rarity,
                         "data": sub_dict_list,
                     }
@@ -150,23 +155,18 @@ for sheet_name in DROP_SHEET_NAMES:
     if "APDrop" in sheet_name:
         sheet_name = sheet_name.replace("APDrop", "AP/Drop")
 
-    result_dict[sheet_name] = sorted(sheet_list, key=item_sorter)
+    result_dict[sheet_name] = sorted(
+        sheet_list, key=lambda x: (rarity_order.get(x["rarity"], 0), x["id"])
+    )
 
-    print(f"... Done.", flush=True)
+    print("... Done.", flush=True)
 
 
-mats_file_name = "./assets/mats.json"
+mats_file_name = Path("./assets/mats.json").resolve()
+mats_file_name.parent.mkdir(parents=True, exist_ok=True)
 
-try:
-    os.makedirs(os.path.dirname(mats_file_name), exist_ok=True)
-
-    with open(mats_file_name, "w") as f:
-        json.dump(result_dict, f, cls=NpEncoder)
-except FileNotFoundError:
-    mats_file_name = input(f"`{mats_file_name}` does not exist; provide alternate file path: ")
-
-    with open(mats_file_name, "w") as f:
-        json.dump(result_dict, f, cls=NpEncoder)
+with open(mats_file_name, "w") as f:
+    json.dump(result_dict, f, cls=NpEncoder)
 
 
 print(f"Wrote drop data to `{mats_file_name}`", flush=True)
